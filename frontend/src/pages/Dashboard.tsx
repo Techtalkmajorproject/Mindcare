@@ -1,225 +1,71 @@
-import {
-    ArrowRight,
-    Brain,
-    FileCheck2,
-    Users,
-    ClipboardList,
-} from "lucide-react";
-
-const stats = [
-    {
-        title: "Total Children",
-        value: "—",
-        description: "No data available",
-        icon: Users,
-    },
-    {
-        title: "Active Screenings",
-        value: "—",
-        description: "No data available",
-        icon: ClipboardList,
-    },
-    {
-        title: "Pending Reviews",
-        value: "—",
-        description: "No data available",
-        icon: Brain,
-    },
-    {
-        title: "Completed Reports",
-        value: "—",
-        description: "No data available",
-        icon: FileCheck2,
-    },
-];
-
-const workflow = [
-    {
-        number: "01",
-        title: "Drawing",
-        description:
-            "Analyze the child's drawing for observable visual and emotional patterns.",
-    },
-    {
-        number: "02",
-        title: "Facial Observation",
-        description:
-            "Capture a short facial-expression observation.",
-    },
-    {
-        number: "03",
-        title: "Context",
-        description:
-            "Add the contextual information required by the screening workflow.",
-    },
-    {
-        number: "04",
-        title: "Multimodal Analysis",
-        description:
-            "Combine available modality outputs into screening indicators.",
-    },
-    {
-        number: "05",
-        title: "Report",
-        description:
-            "Review the findings and prepare the psychologist report.",
-    },
-];
+import { useNavigate } from 'react-router-dom';
+import { Users, Activity, FileText, CheckCircle } from 'lucide-react';
 
 export default function Dashboard() {
+    const navigate = useNavigate();
+    
     return (
-        <div className="mx-auto max-w-7xl space-y-8">
-            {/* Welcome */}
-            <section>
-                <div className="rounded-2xl bg-slate-900 p-8 text-white">
-                    <div className="max-w-2xl">
-                        <p className="mb-2 text-sm font-medium text-slate-300">
-                            Screening workspace
-                        </p>
-
-                        <h2 className="text-3xl font-semibold tracking-tight">
-                            Multimodal Child Screening
-                        </h2>
-
-                        <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300">
-                            Conduct structured screening sessions using drawing,
-                            facial observation and contextual information to support
-                            professional review.
-                        </p>
-
-                        <button
-                            type="button"
-                            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
-                        >
-                            Start New Screening
-                            <ArrowRight size={16} />
-                        </button>
-                    </div>
+        <div className="space-y-6">
+            <div className="flex justify-between items-center">
+                <div>
+                    <h2 className="text-xl font-bold text-slate-800">Child Screening Dashboard</h2>
+                    <p className="text-sm text-slate-500">Monitor screening sessions and review AI-assisted findings.</p>
                 </div>
-            </section>
-
-            {/* Statistics */}
-            <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                {stats.map((stat) => {
-                    const Icon = stat.icon;
-
-                    return (
-                        <div
-                            key={stat.title}
-                            className="rounded-2xl border border-slate-200 bg-white p-5"
-                        >
-                            <div className="flex items-start justify-between">
-                                <div>
-                                    <p className="text-sm text-slate-500">
-                                        {stat.title}
-                                    </p>
-
-                                    <p className="mt-3 text-3xl font-semibold text-slate-900">
-                                        {stat.value}
-                                    </p>
-                                </div>
-
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
-                                    <Icon size={19} />
-                                </div>
-                            </div>
-
-                            <p className="mt-3 text-xs text-slate-400">
-                                {stat.description}
-                            </p>
-                        </div>
-                    );
-                })}
-            </section>
-
-            {/* Recent Screenings */}
-            <section className="rounded-2xl border border-slate-200 bg-white">
-                <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
-                    <div>
-                        <h3 className="font-semibold text-slate-900">
-                            Recent Screenings
-                        </h3>
-
-                        <p className="mt-1 text-sm text-slate-500">
-                            Your latest screening sessions will appear here.
-                        </p>
-                    </div>
-                </div>
-
-                <div className="flex min-h-64 flex-col items-center justify-center px-6 py-10 text-center">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-500">
-                        <ClipboardList size={24} />
-                    </div>
-
-                    <h4 className="mt-4 text-sm font-semibold text-slate-900">
-                        No screening sessions yet
-                    </h4>
-
-                    <p className="mt-1 max-w-sm text-sm text-slate-500">
-                        Start a screening session to begin collecting
-                        multimodal observations.
-                    </p>
-
-                    <button
-                        type="button"
-                        className="mt-5 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
-                    >
-                        Start Screening
-                        <ArrowRight size={16} />
-                    </button>
-                </div>
-            </section>
-
-            {/* Workflow */}
-            <section>
-                <div className="mb-4">
-                    <h3 className="font-semibold text-slate-900">
-                        Screening Workflow
-                    </h3>
-
-                    <p className="mt-1 text-sm text-slate-500">
-                        The screening process combines multiple sources of
-                        information before generating a report.
-                    </p>
-                </div>
-
-                <div className="grid gap-4 lg:grid-cols-5">
-                    {workflow.map((step, index) => (
-                        <div
-                            key={step.number}
-                            className="relative rounded-2xl border border-slate-200 bg-white p-5"
-                        >
-                            <span className="text-xs font-semibold tracking-wider text-slate-400">
-                                {step.number}
-                            </span>
-
-                            <h4 className="mt-3 font-semibold text-slate-900">
-                                {step.title}
-                            </h4>
-
-                            <p className="mt-2 text-sm leading-5 text-slate-500">
-                                {step.description}
-                            </p>
-
-                            {index < workflow.length - 1 && (
-                                <ArrowRight
-                                    size={16}
-                                    className="absolute -right-2 top-1/2 hidden -translate-y-1/2 text-slate-300 lg:block"
-                                />
-                            )}
-                        </div>
-                    ))}
-                </div>
-            </section>
-
-            {/* Disclaimer */}
-            <div className="rounded-2xl border border-slate-200 bg-white px-6 py-4">
-                <p className="text-xs leading-5 text-slate-500">
-                    This system is designed as AI-assisted screening support.
-                    It does not provide a clinical diagnosis. Results should be
-                    interpreted by a qualified professional.
-                </p>
+                <button onClick={() => navigate('/children/new')} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">+ New Screening</button>
             </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {[ 
+                    { label: 'Total Children', val: '—', icon: Users, color: 'text-blue-600', bg: 'bg-blue-100' },
+                    { label: 'Active Screenings', val: '—', icon: Activity, color: 'text-purple-600', bg: 'bg-purple-100' },
+                    { label: 'Pending Reviews', val: '—', icon: FileText, color: 'text-amber-600', bg: 'bg-amber-100' },
+                    { label: 'Completed Reports', val: '—', icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-100' }
+                ].map((stat, i) => (
+                    <div key={i} className="bg-white p-5 rounded-xl border border-slate-200">
+                        <div className="flex items-center justify-between mb-4">
+                            <span className="text-sm font-medium text-slate-600">{stat.label}</span>
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${stat.bg}`}>
+                                <stat.icon className={`w-4 h-4 ${stat.color}`} />
+                            </div>
+                        </div>
+                        <div className="text-2xl font-bold text-slate-800">{stat.val}</div>
+                    </div>
+                ))}
+            </div>
+            
+            <div className="bg-white rounded-xl border border-slate-200">
+                <div className="p-5 border-b border-slate-200">
+                    <h3 className="font-semibold text-slate-800">RECENT SCREENING SESSIONS</h3>
+                </div>
+                <div className="p-12 text-center flex flex-col items-center justify-center">
+                    <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                        <Activity className="w-8 h-8 text-slate-400" />
+                    </div>
+                    <h4 className="text-lg font-medium text-slate-800 mb-1">No screening sessions yet</h4>
+                    <p className="text-sm text-slate-500 mb-6">Start a screening session to begin gathering data.</p>
+                    <button onClick={() => navigate('/children')} className="bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg font-medium text-sm transition-colors">View Children</button>
+                </div>
+            </div>
+            
+            <div className="bg-slate-50 p-6 rounded-xl border border-blue-100 flex flex-col sm:flex-row items-center justify-between max-w-4xl mx-auto shadow-sm">
+                <div className="text-center sm:text-left mb-4 sm:mb-0">
+                    <h4 className="font-semibold text-blue-900 mb-1">SCREENING WORKFLOW</h4>
+                    <p className="text-xs text-blue-600 max-w-xs">End-to-end multimodal screening process</p>
+                </div>
+                <div className="hidden sm:block h-8 w-px bg-blue-200 mx-4"></div>
+                <div className="flex items-center space-x-2 text-xs font-medium text-slate-600 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0">
+                    <span className="bg-white px-2 py-1 rounded shadow-sm">Drawing</span>
+                    <span className="text-slate-400">→</span>
+                    <span className="bg-white px-2 py-1 rounded shadow-sm">Facial Obs.</span>
+                    <span className="text-slate-400">→</span>
+                    <span className="bg-white px-2 py-1 rounded shadow-sm">Context</span>
+                    <span className="text-slate-400">→</span>
+                    <span className="bg-purple-50 text-purple-700 px-2 py-1 rounded shadow-sm">Multimodal Analysis</span>
+                    <span className="text-slate-400">→</span>
+                    <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded shadow-sm border border-blue-100">Report</span>
+                </div>
+            </div>
+            <p className="text-xs text-center text-slate-400 pb-4">AI-assisted screening support only. This system does not provide a clinical diagnosis. Results should be interpreted by a qualified professional.</p>
         </div>
     );
 }

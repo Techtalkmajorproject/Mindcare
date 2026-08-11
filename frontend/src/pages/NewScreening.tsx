@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 
-import { getChildById } from "../services/child.service";
+// Mock child data
 
 const steps = [
     {
@@ -47,7 +47,7 @@ const steps = [
 export default function NewScreening() {
     const { childId } = useParams();
 
-    const child = childId ? getChildById(childId) : null;
+    const child = childId ? { id: childId, screeningId: childId, age: 6 } : null;
 
     if (!child) {
         return (

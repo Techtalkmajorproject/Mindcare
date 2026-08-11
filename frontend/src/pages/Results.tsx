@@ -1,0 +1,135 @@
+import { useNavigate, useParams } from 'react-router-dom';
+import { ShieldAlert, AlertTriangle, Info } from 'lucide-react';
+
+export default function Results() {
+    const { id } = useParams();
+    const navigate = useNavigate();
+
+    // Simulate data unavailable since backend is pending. 
+    // Requirement 36: NO FAKE AI DATA.
+
+    const unavailableData = true;
+
+    return (
+        <div className="space-y-6 pb-20">
+            <div className="flex flex-col md:flex-row justify-between md:items-end space-y-4 md:space-y-0">
+                <div>
+                    <h2 className="text-2xl font-bold text-slate-800">Screening Results</h2>
+                    <div className="flex items-center mt-2 space-x-4 text-sm text-slate-500 font-medium">
+                        <span>ID: {id}</span>
+                        <span>•</span>
+                        <span>Date: {new Date().toLocaleDateString()}</span>
+                        <span>•</span>
+                        <span className="flex items-center text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">Analysis completed</span>
+                    </div>
+                </div>
+                <button onClick={() => navigate(`/screenings/${id}/report`)} className="bg-slate-800 hover:bg-slate-900 text-white px-6 py-2.5 rounded-lg font-medium transition-colors shadow-sm">
+                    Review Report
+                </button>
+            </div>
+
+            <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+                <div className="flex">
+                    <AlertTriangle className="h-5 w-5 text-amber-500 mr-3" />
+                    <div>
+                        <h3 className="text-sm font-bold text-amber-800">Disclaimer</h3>
+                        <p className="text-sm text-amber-700 mt-1">
+                            AI-assisted screening support only. This system does not provide a clinical diagnosis. Results should be interpreted by a qualified professional.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Overall Screening Summary */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm col-span-1 md:col-span-2">
+                    <h3 className="text-sm font-bold text-slate-500 uppercase flex items-center mb-4"><ShieldAlert className="w-4 h-4 mr-2" /> Anxiety-related Screening Indicator</h3>
+
+                    <div className="flex items-end space-x-6">
+                        <div className="text-4xl font-bold text-slate-300">
+                            {unavailableData ? 'Not available' : 'TBD'}
+                        </div>
+                    </div>
+                    {unavailableData && <p className="text-sm text-slate-400 mt-2">Awaiting analysis data from the backend.</p>}
+                </div>
+
+                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center">
+                    <h3 className="text-sm font-bold text-slate-500 uppercase mb-2">Referral Review</h3>
+                    <div className="font-bold text-xl text-slate-400">{unavailableData ? 'Not available' : 'TBD'}</div>
+                    <p className="text-xs text-slate-400 mt-1">Model Confidence: Not available</p>
+                </div>
+            </div>
+
+            {/* Metrics */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 className="font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">DRAWING ANALYSIS</h3>
+                    {unavailableData ? (
+                        <div className="h-64 flex items-center justify-center bg-slate-50 rounded-lg border border-dashed border-slate-200">
+                            <span className="text-slate-400 font-medium">No drawing analysis available.</span>
+                        </div>
+                    ) : (
+                        <div className="h-64">{/* Charts would go here from backend data */}</div>
+                    )}
+                    <div className="mt-4 grid grid-cols-2 gap-4 text-sm bg-slate-50 p-4 rounded-lg">
+                        <div>
+                            <span className="text-slate-500 block mb-1 text-xs uppercase font-semibold">Dominant Emotion</span>
+                            <span className="font-medium text-slate-700">Not available</span>
+                        </div>
+                        <div>
+                            <span className="text-slate-500 block mb-1 text-xs uppercase font-semibold">Input Quality</span>
+                            <span className="font-medium text-slate-700">Not available</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 className="font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">FACIAL EMOTION ANALYSIS</h3>
+                    {unavailableData ? (
+                        <div className="h-64 flex items-center justify-center bg-slate-50 rounded-lg border border-dashed border-slate-200">
+                            <span className="text-slate-400 font-medium">No facial observation data available.</span>
+                        </div>
+                    ) : (
+                        <div className="h-64">{/* Chart would go here */}</div>
+                    )}
+                    <div className="mt-4 grid grid-cols-2 gap-4 text-sm bg-slate-50 p-4 rounded-lg">
+                        <div>
+                            <span className="text-slate-500 block mb-1 text-xs uppercase font-semibold">Observation Time</span>
+                            <span className="font-medium text-slate-700">Not available</span>
+                        </div>
+                        <div>
+                            <span className="text-slate-500 block mb-1 text-xs uppercase font-semibold">Frames Analyzed</span>
+                            <span className="font-medium text-slate-700">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h3 className="font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2 flex items-center">
+                    MULTIMODAL FINDINGS <Info className="w-4 h-4 ml-2 text-slate-400" />
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                        <span className="text-xs font-semibold text-slate-500 block mb-2 uppercase">Drawing Signal</span>
+                        <div className="font-medium text-slate-400">Not available</div>
+                    </div>
+                    <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                        <span className="text-xs font-semibold text-slate-500 block mb-2 uppercase">Facial Signal</span>
+                        <div className="font-medium text-slate-400">Not available</div>
+                    </div>
+                    <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                        <span className="text-xs font-semibold text-slate-500 block mb-2 uppercase">Context Signal</span>
+                        <div className="font-medium text-slate-400">Not available</div>
+                    </div>
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-blue-50 border border-blue-100 rounded-lg">
+                    <span className="font-medium text-blue-900">Cross-Modal Consistency</span>
+                    <span className="font-bold text-blue-400">Not available</span>
+                </div>
+            </div>
+        </div>
+    );
+}

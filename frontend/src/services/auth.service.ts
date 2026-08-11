@@ -1,21 +1,6 @@
-import api from './api';
-import type { AuthResponse } from '../types/auth';
-
+import { apiClient } from './api';
 export const authService = {
-    login: async (credentials: any): Promise<AuthResponse> => {
-        const { data } = await api.post<AuthResponse>('/auth/login', credentials);
-        if (data.token) {
-            localStorage.setItem('token', data.token);
-        }
-        return data;
-    },
-
-    logout: () => {
-        localStorage.removeItem('token');
-    },
-
-    getCurrentUser: async () => {
-        const { data } = await api.get('/auth/me');
-        return data;
-    }
+  login: async (credentials: any) => apiClient.post('/auth/login', credentials),
+  logout: async () => apiClient.post('/auth/logout'),
+  getCurrentUser: async () => apiClient.get('/auth/me'),
 };

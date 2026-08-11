@@ -21,7 +21,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (token) {
                 try {
                     const userData = await authService.getCurrentUser();
-                    setUser(userData);
+                    setUser(userData.data);
                 } catch (e) {
                     localStorage.removeItem('token');
                 }
@@ -33,7 +33,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const login = async (credentials: any) => {
         const data = await authService.login(credentials);
-        setUser(data.user);
+        setUser(data.data.user);
     };
 
     const logout = () => {

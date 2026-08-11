@@ -1,194 +1,62 @@
-import { ArrowLeft, ShieldCheck, UserRound } from "lucide-react";
-import { FormEvent, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-
-import { createChild } from "../services/child.service";
-import type { ChildSex } from "../types/child";
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateChild() {
     const navigate = useNavigate();
 
-    const [age, setAge] = useState("");
-    const [sex, setSex] = useState<ChildSex | "">("");
-    const [error, setError] = useState("");
-
-    function handleSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        setError("");
-
-        const numericAge = Number(age);
-
-        if (!age) {
-            setError("Please enter the child's age.");
-            return;
-        }
-
-        if (!Number.isInteger(numericAge) || numericAge < 1 || numericAge > 18) {
-            setError("Please enter a valid age between 1 and 18.");
-            return;
-        }
-
-        if (!sex) {
-            setError("Please select the child's sex.");
-            return;
-        }
-
-        const child = createChild({
-            age: numericAge,
-            sex,
-        });
-
-        navigate(`/children/${child.id}`);
-    }
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        // Frontend only logic for now
+        navigate('/children/CH-NEW123');
+    };
 
     return (
-        <div className="mx-auto max-w-3xl space-y-6">
-            {/* Back */}
-            <Link
-                to="/children"
-                className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-slate-900"
-            >
-                <ArrowLeft size={16} />
-                Back to Children
-            </Link>
-
-            {/* Header */}
+        <div className="max-w-2xl mx-auto space-y-6">
             <div>
-                <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
-                    Create Screening Profile
-                </h2>
-
-                <p className="mt-1 text-sm text-slate-500">
-                    Create a profile before starting the child's screening
-                    session.
-                </p>
+                <h2 className="text-xl font-bold text-slate-800">Create Screening Profile</h2>
+                <p className="text-sm text-slate-500">Add a new child profile to start a screening session.</p>
             </div>
 
-            {/* Form */}
-            <form
-                onSubmit={handleSubmit}
-                className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
-            >
-                <div className="border-b border-slate-200 px-6 py-5">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
-                            <UserRound size={19} />
-                        </div>
-
-                        <div>
-                            <h3 className="font-semibold text-slate-900">
-                                Child Information
-                            </h3>
-
-                            <p className="mt-0.5 text-xs text-slate-500">
-                                Only information required for the screening workflow
-                                is collected.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="space-y-6 p-6">
-                    {/* Age */}
+            <div className="bg-white rounded-xl border border-slate-200 p-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label
-                            htmlFor="age"
-                            className="mb-2 block text-sm font-medium text-slate-700"
-                        >
-                            Age
-                        </label>
-
-                        <input
-                            id="age"
-                            type="number"
-                            min="1"
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Age (Years)</label>
+                        <input 
+                            type="number" 
+                            required 
+                            min="3" 
                             max="18"
-                            value={age}
-                            onChange={(event) => setAge(event.target.value)}
-                            placeholder="Enter age"
-                            className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                            className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" 
+                            placeholder="e.g. 6" 
                         />
-
-                        <p className="mt-2 text-xs text-slate-400">
-                            Enter the child's age in completed years.
-                        </p>
+                        <p className="mt-1 text-xs text-slate-500">Must be between 3 and 18 years.</p>
                     </div>
-
-                    {/* Sex */}
+                    
                     <div>
-                        <label
-                            htmlFor="sex"
-                            className="mb-2 block text-sm font-medium text-slate-700"
-                        >
-                            Sex
-                        </label>
-
-                        <select
-                            id="sex"
-                            value={sex}
-                            onChange={(event) =>
-                                setSex(event.target.value as ChildSex | "")
-                            }
-                            className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
-                        >
-                            <option value="">Select</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="other">Other</option>
-                            <option value="prefer_not_to_say">
-                                Prefer not to say
-                            </option>
-                        </select>
-                    </div>
-
-                    {/* Privacy notice */}
-                    <div className="flex gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
-                        <ShieldCheck
-                            size={19}
-                            className="mt-0.5 shrink-0 text-slate-500"
-                        />
-
-                        <div>
-                            <p className="text-sm font-medium text-slate-800">
-                                Screening information
-                            </p>
-
-                            <p className="mt-1 text-xs leading-5 text-slate-500">
-                                The profile is used to associate screening sessions
-                                and analysis results with the correct child. Avoid
-                                entering unnecessary personal information.
-                            </p>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">Sex</label>
+                        <div className="flex space-x-4">
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="sex" required value="Male" className="text-blue-600 focus:ring-blue-500" />
+                                <span className="text-sm text-slate-700">Male</span>
+                            </label>
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="sex" required value="Female" className="text-blue-600 focus:ring-blue-500" />
+                                <span className="text-sm text-slate-700">Female</span>
+                            </label>
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="sex" required value="Other" className="text-blue-600 focus:ring-blue-500" />
+                                <span className="text-sm text-slate-700">Other</span>
+                            </label>
                         </div>
                     </div>
 
-                    {/* Error */}
-                    {error && (
-                        <div
-                            role="alert"
-                            className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-                        >
-                            {error}
-                        </div>
-                    )}
-                </div>
-
-                {/* Actions */}
-                <div className="flex items-center justify-end gap-3 border-t border-slate-200 bg-slate-50/60 px-6 py-4">
-                    <Link
-                        to="/children"
-                        className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
-                    >
-                        Cancel
-                    </Link>
-
-                    <button
-                        type="submit"
-                        className="rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
-                    >
-                        Create Profile
-                    </button>
-                </div>
-            </form>
+                    <div className="pt-4 border-t border-slate-200 flex justify-end space-x-3">
+                        <button type="button" onClick={() => navigate('/children')} className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg font-medium text-sm hover:bg-slate-50 transition-colors">Cancel</button>
+                        <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">Create Screening Profile</button>
+                    </div>
+                </form>
+            </div>
+            
+            <p className="text-xs text-center text-slate-400 pb-4 mt-6">AI-assisted screening support only. This system does not provide a clinical diagnosis.</p>
         </div>
     );
 }

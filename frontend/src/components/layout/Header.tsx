@@ -1,50 +1,41 @@
-import { Bell, Search } from "lucide-react";
+import { Bell, Search } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
-interface HeaderProps {
-    title: string;
-    description?: string;
-}
+const getPageInfo = (pathname: string) => {
+    if (pathname.includes('/screenings/')) return { title: 'Screening Workspace', desc: 'Active screening session' };
+    if (pathname.includes('/children/new')) return { title: 'Add Child', desc: 'Create a new screening profile' };
+    if (pathname.includes('/children/')) return { title: 'Child Profile', desc: 'Screening history and details' };
+    if (pathname === '/children') return { title: 'Children', desc: 'Manage screening profiles and previous sessions.' };
+    if (pathname === '/dashboard') return { title: 'Dashboard', desc: 'Monitor screening sessions and review findings.' };
+    if (pathname === '/screenings') return { title: 'Screenings', desc: 'View all past screenings.' };
+    if (pathname === '/reports') return { title: 'Reports', desc: 'Review and manage AI-assisted screening reports.' };
+    return { title: 'Application', desc: '' };
+};
 
-export default function Header({
-    title,
-    description,
-}: HeaderProps) {
+export default function Header() {
+    const location = useLocation();
+    const { title, desc } = getPageInfo(location.pathname);
+
     return (
-        <header className="flex min-h-20 items-center justify-between border-b border-slate-200 bg-white px-8">
+        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6">
             <div>
-                <h1 className="text-xl font-semibold text-slate-900">
-                    {title}
-                </h1>
-
-                {description && (
-                    <p className="mt-1 text-sm text-slate-500">
-                        {description}
-                    </p>
-                )}
+                <h1 className="text-lg font-semibold text-slate-900">{title}</h1>
+                <p className="text-sm text-slate-500 hidden sm:block">{desc}</p>
             </div>
-
-            <div className="flex items-center gap-3">
-                <button
-                    type="button"
-                    className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:bg-slate-50"
-                    aria-label="Search"
-                >
-                    <Search size={18} />
-                </button>
-
-                <button
-                    type="button"
-                    className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:bg-slate-50"
-                    aria-label="Notifications"
-                >
-                    <Bell size={18} />
-
-                    <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-slate-900" />
-                </button>
-
-                <div className="ml-2 flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-sm font-semibold text-white">
-                    P
+            
+            <div className="flex items-center space-x-4">
+                <div className="relative">
+                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input 
+                        type="text" 
+                        placeholder="Search..." 
+                        className="pl-9 pr-4 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
                 </div>
+                <button className="relative p-2 text-slate-400 hover:text-slate-600 transition-colors">
+                    <Bell className="w-5 h-5" />
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+                </button>
             </div>
         </header>
     );

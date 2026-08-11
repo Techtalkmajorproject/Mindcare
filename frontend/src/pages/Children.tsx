@@ -1,211 +1,79 @@
-import {
-    CalendarDays,
-    ChevronRight,
-    Plus,
-    Search,
-    Users,
-} from "lucide-react";
-import { Link } from "react-router-dom";
-import { useMemo, useState } from "react";
-
-import EmptyState from "../components/common/EmptyState";
-import { getChildren } from "../services/child.service";
-import type { Child } from "../types/child";
-
-function formatDate(date: string) {
-    return new Intl.DateTimeFormat("en-IN", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-    }).format(new Date(date));
-}
-
-function formatSex(sex: Child["sex"]) {
-    switch (sex) {
-        case "male":
-            return "Male";
-        case "female":
-            return "Female";
-        case "other":
-            return "Other";
-        default:
-            return "Prefer not to say";
-    }
-}
+import { useNavigate } from 'react-router-dom';
+import { Search, UserCheck } from 'lucide-react';
 
 export default function Children() {
-    const [children] = useState<Child[]>(() => getChildren());
-    const [search, setSearch] = useState("");
-
-    const filteredChildren = useMemo(() => {
-        const value = search.trim().toLowerCase();
-
-        if (!value) {
-            return children;
-        }
-
-        return children.filter((child) =>
-            child.screeningId.toLowerCase().includes(value),
-        );
-    }, [children, search]);
+    const navigate = useNavigate();
+    
+    // Fake data for UI representation
+    const childrenList = [
+        { id: 'CH-849201', age: 6, sex: 'Female', sessions: 2, lastScreening: '2023-10-12', action: 'View' },
+        { id: 'CH-271944', age: 7, sex: 'Male', sessions: 1, lastScreening: '2023-11-05', action: 'View' },
+    ];
 
     return (
-        <div className="mx-auto max-w-7xl space-y-6">
-            {/* Header */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="space-y-6">
+            <div className="flex justify-between items-center">
                 <div>
-                    <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
-                        Children
-                    </h2>
-
-                    <p className="mt-1 text-sm text-slate-500">
-                        Manage screening profiles and review previous sessions.
-                    </p>
+                    <h2 className="text-xl font-bold text-slate-800">Children</h2>
+                    <p className="text-sm text-slate-500">Manage screening profiles and previous screening sessions.</p>
                 </div>
-
-                <Link
-                    to="/children/new"
-                    className="inline-flex w-fit items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
-                >
-                    <Plus size={17} />
-                    Add Child
-                </Link>
+                <button onClick={() => navigate('/children/new')} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">+ Add Child</button>
             </div>
 
-            {/* Search */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <div className="relative max-w-md">
-                    <Search
-                        size={18}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                    />
-
-                    <input
-                        type="text"
-                        value={search}
-                        onChange={(event) => setSearch(event.target.value)}
-                        placeholder="Search by screening ID"
-                        className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100"
-                    />
-                </div>
-            </div>
-
-            {/* Table */}
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-                <div className="border-b border-slate-200 px-6 py-5">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
-                            <Users size={19} />
-                        </div>
-
-                        <div>
-                            <h3 className="font-semibold text-slate-900">
-                                Screening Profiles
-                            </h3>
-
-                            <p className="mt-0.5 text-xs text-slate-500">
-                                {children.length} profile
-                                {children.length !== 1 ? "s" : ""}
-                            </p>
-                        </div>
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                <div className="p-4 border-b border-slate-200 flex justify-between items-center">
+                    <div className="relative w-64">
+                        <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                        <input 
+                            type="text" 
+                            placeholder="Search by screening ID" 
+                            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
                     </div>
                 </div>
 
-                {filteredChildren.length === 0 ? (
-                    <EmptyState
-                        icon={Users}
-                        title={
-                            children.length === 0
-                                ? "No children added yet"
-                                : "No matching profiles"
-                        }
-                        description={
-                            children.length === 0
-                                ? "Create a screening profile to begin a new child assessment."
-                                : "Try searching with a different screening ID."
-                        }
-                        action={
-                            children.length === 0 ? (
-                                <Link
-                                    to="/children/new"
-                                    className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
-                                >
-                                    <Plus size={16} />
-                                    Add Child
-                                </Link>
-                            ) : undefined
-                        }
-                    />
-                ) : (
+                {childrenList.length > 0 ? (
                     <div className="overflow-x-auto">
-                        <table className="w-full min-w-[720px]">
-                            <thead>
-                                <tr className="border-b border-slate-200 bg-slate-50/70">
-                                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
-                                        Screening ID
-                                    </th>
-
-                                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
-                                        Age
-                                    </th>
-
-                                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
-                                        Sex
-                                    </th>
-
-                                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
-                                        Created
-                                    </th>
-
-                                    <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-400">
-                                        Action
-                                    </th>
+                        <table className="w-full text-left text-sm text-slate-600">
+                            <thead className="bg-slate-50 border-b border-slate-200 text-xs uppercase font-semibold text-slate-500">
+                                <tr>
+                                    <th className="px-6 py-4">Screening ID</th>
+                                    <th className="px-6 py-4">Age</th>
+                                    <th className="px-6 py-4">Sex</th>
+                                    <th className="px-6 py-4">Sessions</th>
+                                    <th className="px-6 py-4">Last Screening</th>
+                                    <th className="px-6 py-4 text-right">Action</th>
                                 </tr>
                             </thead>
-
-                            <tbody>
-                                {filteredChildren.map((child) => (
-                                    <tr
-                                        key={child.id}
-                                        className="border-b border-slate-100 last:border-0 hover:bg-slate-50/60"
-                                    >
-                                        <td className="px-6 py-4">
-                                            <span className="font-mono text-sm font-medium text-slate-900">
-                                                {child.screeningId}
-                                            </span>
-                                        </td>
-
-                                        <td className="px-6 py-4 text-sm text-slate-600">
-                                            {child.age}
-                                        </td>
-
-                                        <td className="px-6 py-4 text-sm text-slate-600">
-                                            {formatSex(child.sex)}
-                                        </td>
-
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2 text-sm text-slate-600">
-                                                <CalendarDays size={15} className="text-slate-400" />
-                                                {formatDate(child.createdAt)}
-                                            </div>
-                                        </td>
-
-                                        <td className="px-6 py-4 text-right">
-                                            <Link
-                                                to={`/children/${child.id}`}
-                                                className="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-                                            >
-                                                View
-                                                <ChevronRight size={15} />
-                                            </Link>
+                            <tbody className="divide-y divide-slate-200">
+                                {childrenList.map((child, i) => (
+                                    <tr key={i} className="hover:bg-slate-50 transition-colors">
+                                        <td className="px-6 py-4 font-medium text-slate-900">{child.id}</td>
+                                        <td className="px-6 py-4">{child.age} yrs</td>
+                                        <td className="px-6 py-4">{child.sex}</td>
+                                        <td className="px-6 py-4">{child.sessions}</td>
+                                        <td className="px-6 py-4">{child.lastScreening}</td>
+                                        <td className="px-6 py-4 text-right space-x-3">
+                                            <button onClick={() => navigate(`/children/${child.id}`)} className="text-blue-600 font-medium hover:text-blue-800">View</button>
+                                            <button onClick={() => navigate(`/screenings/new?childId=${child.id}`)} className="text-blue-600 font-medium hover:text-blue-800">Start Screening</button>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
+                ) : (
+                    <div className="p-16 text-center flex flex-col items-center justify-center">
+                        <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-4">
+                            <UserCheck className="w-8 h-8" />
+                        </div>
+                        <h4 className="text-lg font-medium text-slate-800 mb-2">No children found</h4>
+                        <p className="text-sm text-slate-500 mb-6">You haven't added any screening profiles yet.</p>
+                        <button onClick={() => navigate('/children/new')} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">+ Add Child</button>
+                    </div>
                 )}
             </div>
+            <p className="text-xs text-center text-slate-400 pb-4">AI-assisted screening support only. This system does not provide a clinical diagnosis. Results should be interpreted by a qualified professional.</p>
         </div>
     );
 }
