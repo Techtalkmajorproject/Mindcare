@@ -18,6 +18,7 @@ export default function ScreeningWorkspace() {
     // Camera state
     const videoRef = useRef<HTMLVideoElement>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+    const streamRef = useRef<MediaStream | null>(null);
     const [cameraState, setCameraState] = useState<'initial' | 'ready' | 'recording' | 'completed' | 'error'>('initial');
     const [recordingTime, setRecordingTime] = useState(0);
     const [sessionTime, setSessionTime] = useState(0);
@@ -37,6 +38,15 @@ export default function ScreeningWorkspace() {
             interval = setInterval(() => setRecordingTime(t => t + 1), 1000);
         }
         return () => clearInterval(interval);
+    }, [cameraState]);
+
+    // Attach stream to video on render
+    useEffect(() => {
+        if ((cameraState === 'ready' || cameraState === 'recording') && videoRef.current && streamRef.current) {
+            if (videoRef.current.srcObject !== streamRef.current) {
+                videoRef.current.srcObject = streamRef.current;
+            }
+        }
     }, [cameraState]);
 
     // Format time
@@ -159,9 +169,7 @@ export default function ScreeningWorkspace() {
     const enableCamera = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            if (videoRef.current) {
-                videoRef.current.srcObject = stream;
-            }
+            streamRef.current = stream;
             setCameraState('ready');
         } catch (err) {
             console.error(err);
@@ -170,8 +178,8 @@ export default function ScreeningWorkspace() {
     };
 
     const startRecording = () => {
-        if (!videoRef.current || !videoRef.current.srcObject) return;
-        const stream = videoRef.current.srcObject as MediaStream;
+        if (!streamRef.current) return;
+        const stream = streamRef.current;
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorderRef.current = mediaRecorder;
 
@@ -189,7 +197,7 @@ export default function ScreeningWorkspace() {
             setCameraState('completed');
         };
 
-        mediaRecorder.start();
+        mediaRecorder.start(1000);
         setCameraState('recording');
         setRecordingTime(0);
     };
@@ -197,11 +205,11 @@ export default function ScreeningWorkspace() {
     const stopRecording = () => {
         if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
             mediaRecorderRef.current.stop();
-            // Stop tracks
-            const stream = videoRef.current?.srcObject as MediaStream;
+            const stream = streamRef.current;
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());
             }
+            streamRef.current = null;
         }
     };
 
