@@ -47,10 +47,7 @@ export default function Register() {
             <div className="hidden lg:flex flex-1 bg-gradient-to-br from-emerald-800 to-teal-600 p-12 text-white flex-col justify-center">
                 <h1 className="text-4xl font-bold mb-4">Mindcare AI</h1>
                 <p className="text-xl text-teal-100 max-w-md">Join the platform to perform AI-assisted multimodal child screenings seamlessly.</p>
-                <div className="mt-8 p-6 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20">
-                    <h3 className="font-medium">Confidentiality Notice</h3>
-                    <p className="text-sm mt-2 text-teal-50">This system is designed exclusively for authorized child psychologists and medical professionals.</p>
-                </div>
+
             </div>
             <div className="flex-1 flex flex-col justify-center p-8 lg:p-24">
                 <div className="w-full max-w-md mx-auto bg-white p-8 rounded-2xl shadow-sm border border-slate-200">

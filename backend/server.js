@@ -386,6 +386,90 @@ app.put("/api/reports/:id", verifyToken, async (req, res) => {
   }
 });
 
+// Dashboard Stats Route
+app.get("/api/stats", verifyToken, async (req, res) => {
+  try {
+    const uid = req.user.uid;
+
+    // Total Children
+    const childrenSnap = await db.collection("children").where("createdBy", "==", uid).get();
+    const totalChildren = childrenSnap.size;
+
+    // Active Screenings
+    let activeScreenings = 0;
+    try {
+      const activeSnap = await db.collection("screenings")
+        .where("conductedBy", "==", uid)
+        .where("status", "in", ["created", "in_progress", "in-progress"])
+        .get();
+      activeScreenings = activeSnap.size;
+    } catch (e) {
+      // fallback without composite index
+      const sn = await db.collection("screenings").where("conductedBy", "==", uid).get();
+      activeScreenings = sn.docs.filter(d => ['created', 'in_progress', 'in-progress'].includes(d.data().status)).length;
+    }
+
+    // Pending Reviews (Draft Reports)
+    let pendingReviews = 0;
+    try {
+      const pendingSnap = await db.collection("reports")
+        .where("generatedBy", "==", uid)
+        .where("status", "==", "draft")
+        .get();
+      pendingReviews = pendingSnap.size;
+    } catch (e) {
+      const sn = await db.collection("reports").where("generatedBy", "==", uid).get();
+      pendingReviews = sn.docs.filter(d => d.data().status === 'draft').length;
+    }
+
+    // Completed Reports (Approved Reports)
+    let completedReports = 0;
+    try {
+      const completedSnap = await db.collection("reports")
+        .where("generatedBy", "==", uid)
+        .where("status", "==", "approved")
+        .get();
+      completedReports = completedSnap.size;
+    } catch (e) {
+      const sn = await db.collection("reports").where("generatedBy", "==", uid).get();
+      completedReports = sn.docs.filter(d => d.data().status === 'approved').length;
+    }
+    // Recent Screenings with Child Details
+    let recentScreenings = [];
+    try {
+      const allScreenings = await db.collection("screenings").where("conductedBy", "==", uid).get();
+      let sorted = allScreenings.docs.map(d => ({ id: d.id, ...d.data() }));
+      sorted = sorted.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0)).slice(0, 5);
+
+      // Fetch child names for these screenings
+      recentScreenings = await Promise.all(sorted.map(async (scr) => {
+        let childName = "Unknown Child";
+        if (scr.childId) {
+          const cdoc = await db.collection("children").doc(scr.childId).get();
+          if (cdoc.exists) childName = cdoc.data().name;
+        }
+        return {
+          ...scr,
+          childName
+        };
+      }));
+    } catch (e) {
+      console.warn("Failed fetching recent screenings", e);
+    }
+
+    res.json({
+      totalChildren,
+      activeScreenings,
+      pendingReviews,
+      completedReports,
+      recentScreenings
+    });
+  } catch (error) {
+    console.error("Dashboard Stats Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
