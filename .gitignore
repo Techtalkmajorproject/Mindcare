@@ -13,3 +13,9 @@ models/*.pkl
 datasets/
 storage/
 .DS_Store
+
+# Secrets
+serviceAccountKey.json
+backend/serviceAccountKey.json
+.env.*
+!.env.example
