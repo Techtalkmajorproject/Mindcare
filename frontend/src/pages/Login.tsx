@@ -32,12 +32,12 @@ export default function Login() {
     };
     return (
         <div className="min-h-screen bg-slate-50 flex">
-            <div className="hidden lg:flex flex-1 bg-gradient-to-br from-blue-600 to-indigo-800 p-12 text-white flex-col justify-center">
+            <div className="hidden lg:flex flex-1 bg-gradient-to-br from-teal-600 to-emerald-800 p-12 text-white flex-col justify-center">
                 <h1 className="text-4xl font-bold mb-4">Mindcare AI</h1>
-                <p className="text-xl text-blue-100 max-w-md">AI-assisted multimodal child screening and referral support.</p>
+                <p className="text-xl text-teal-100 max-w-md">AI-assisted multimodal child screening and referral support.</p>
                 <div className="mt-8 p-6 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20">
                     <h3 className="font-medium">Confidentiality Notice</h3>
-                    <p className="text-sm mt-2 text-blue-50">This system is for authorized professional use only.</p>
+                    <p className="text-sm mt-2 text-teal-50">This system is for authorized professional use only.</p>
                 </div>
             </div>
             <div className="flex-1 flex flex-col justify-center p-8 lg:p-24">
@@ -52,22 +52,22 @@ export default function Login() {
                     <form onSubmit={handleLogin} className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                            <input value={email} onChange={e => setEmail(e.target.value)} type="email" required className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="dr.smith@clinic.com" />
+                            <input value={email} onChange={e => setEmail(e.target.value)} type="email" required className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="dr.smith@clinic.com" />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
-                            <input value={password} onChange={e => setPassword(e.target.value)} type="password" required className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="••••••••" />
+                            <input value={password} onChange={e => setPassword(e.target.value)} type="password" required className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="••••••••" />
                         </div>
                         <div className="flex justify-between items-center text-sm">
                             <label className="flex items-center text-slate-600">
                                 <input type="checkbox" className="mr-2" /> Remember me
                             </label>
-                            <a href="#" className="text-blue-600 hover:underline">Forgot password?</a>
+                            <a href="#" className="text-teal-600 hover:underline">Forgot password?</a>
                         </div>
-                        <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition-colors">Sign In</button>
+                        <button type="submit" className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 rounded-lg transition-colors">Sign In</button>
                     </form>
                     <div className="mt-6 text-center text-sm text-slate-500">
-                        Don't have an account? <button onClick={() => navigate('/register')} className="text-blue-600 font-medium hover:underline">Sign up</button>
+                        Don't have an account? <button onClick={() => navigate('/register')} className="text-teal-600 font-medium hover:underline">Sign up</button>
                     </div>
                 </div>
             </div>

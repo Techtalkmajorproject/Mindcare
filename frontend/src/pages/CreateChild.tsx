@@ -42,17 +42,17 @@ export default function CreateChild() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
-                        <input type="text" name="name" required value={formData.name} onChange={handleChange} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="e.g. John Doe" />
+                        <input type="text" name="name" required value={formData.name} onChange={handleChange} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="e.g. John Doe" />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-1">Date of Birth</label>
-                            <input type="date" name="dateOfBirth" required value={formData.dateOfBirth} onChange={handleChange} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                            <input type="date" name="dateOfBirth" required value={formData.dateOfBirth} onChange={handleChange} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none" />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-1">Age (Years)</label>
-                            <input type="number" name="age" required min="3" max="18" value={formData.age} onChange={handleChange} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="e.g. 6" />
+                            <input type="number" name="age" required min="3" max="18" value={formData.age} onChange={handleChange} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="e.g. 6" />
                         </div>
                     </div>
 
@@ -61,7 +61,7 @@ export default function CreateChild() {
                         <div className="flex space-x-4">
                             {['Male', 'Female', 'Other'].map((g) => (
                                 <label key={g} className="flex items-center space-x-2">
-                                    <input type="radio" name="gender" required value={g} checked={formData.gender === g} onChange={handleChange} className="text-blue-600 focus:ring-blue-500" />
+                                    <input type="radio" name="gender" required value={g} checked={formData.gender === g} onChange={handleChange} className="text-teal-600 focus:ring-teal-500" />
                                     <span className="text-sm text-slate-700">{g}</span>
                                 </label>
                             ))}
@@ -71,7 +71,7 @@ export default function CreateChild() {
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-1">Parent Name</label>
-                            <input type="text" name="parentName" required value={formData.parentName} onChange={handleChange} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="e.g. Jane Doe" />
+                            <input type="text" name="parentName" required value={formData.parentName} onChange={handleChange} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="e.g. Jane Doe" />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-1">Parent Contact</label>
@@ -81,12 +81,12 @@ export default function CreateChild() {
 
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-1">Primary Issue / Presenting Problem</label>
-                        <textarea name="primaryIssue" required rows={3} value={formData.primaryIssue} onChange={handleChange} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none" placeholder="Briefly describe the reason for screening..."></textarea>
+                        <textarea name="primaryIssue" required rows={3} value={formData.primaryIssue} onChange={handleChange} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none resize-none" placeholder="Briefly describe the reason for screening..."></textarea>
                     </div>
 
                     <div className="pt-4 border-t border-slate-200 flex justify-end space-x-3">
                         <button type="button" onClick={() => navigate('/children')} className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg font-medium text-sm hover:bg-slate-50 transition-colors">Cancel</button>
-                        <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">Create Screening Profile</button>
+                        <button type="submit" className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">Create Screening Profile</button>
                     </div>
                 </form>
             </div>

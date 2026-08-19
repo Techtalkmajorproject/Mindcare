@@ -69,7 +69,7 @@ export default function Report() {
                     </button>
                     <button onClick={() => {
                         window.print();
-                    }} className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors shadow-sm">
+                    }} className="flex items-center bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors shadow-sm">
                         <Download className="w-4 h-4 mr-2" /> Download PDF
                     </button>
                     {status !== 'approved' && (
@@ -134,7 +134,7 @@ export default function Report() {
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                         placeholder="Enter clinical observations, context around the screening session, and any interpretation of the AI-assisted findings..."
-                        className="w-full h-40 p-4 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-y text-slate-700"
+                        className="w-full h-40 p-4 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none resize-y text-slate-700"
                     />
                 </div>
             </div>

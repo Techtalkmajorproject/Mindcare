@@ -58,7 +58,7 @@ export default function Results() {
                         <span>•</span>
                         <span>Date: {new Date().toLocaleDateString()}</span>
                         <span>•</span>
-                        <span className="flex items-center text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">Analysis completed</span>
+                        <span className="flex items-center text-teal-600 bg-teal-50 px-2 py-0.5 rounded border border-teal-100">Analysis completed</span>
                     </div>
                 </div>
                 <button onClick={handleReviewReport} disabled={generating} className="bg-slate-800 hover:bg-slate-900 text-white px-6 py-2.5 rounded-lg font-medium transition-colors shadow-sm disabled:opacity-50">
@@ -169,9 +169,9 @@ export default function Results() {
                     </div>
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-blue-50 border border-blue-100 rounded-lg">
-                    <span className="font-medium text-blue-900">Cross-Modal Consistency</span>
-                    <span className="font-bold text-blue-400">Not available</span>
+                <div className="flex items-center justify-between p-4 bg-teal-50 border border-teal-100 rounded-lg">
+                    <span className="font-medium text-teal-900">Cross-Modal Consistency</span>
+                    <span className="font-bold text-teal-600">Not available</span>
                 </div>
             </div>
         </div>

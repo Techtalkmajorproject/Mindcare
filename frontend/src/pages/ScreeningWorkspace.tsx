@@ -253,7 +253,7 @@ export default function ScreeningWorkspace() {
                         </div>
                     </div>
                 </div>
-                <button onClick={handleFinish} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium shadow-sm transition-colors">Finish & Analyze</button>
+                <button onClick={handleFinish} className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg font-medium shadow-sm transition-colors">Finish & Analyze</button>
             </div>
 
             {/* Main Workspace */}
@@ -266,10 +266,10 @@ export default function ScreeningWorkspace() {
 
                         {!uploadedImage && (
                             <div className="flex space-x-1 bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
-                                <button onClick={() => setMode('draw')} className={`p-1.5 rounded ${mode === 'draw' ? 'bg-blue-100 text-blue-700' : 'text-slate-500 hover:bg-slate-100'}`} title="Brush">
+                                <button onClick={() => setMode('draw')} className={`p-1.5 rounded ${mode === 'draw' ? 'bg-teal-100 text-teal-700' : 'text-slate-500 hover:bg-slate-100'}`} title="Brush">
                                     <Edit2 className="w-4 h-4" />
                                 </button>
-                                <button onClick={() => setMode('erase')} className={`p-1.5 rounded ${mode === 'erase' ? 'bg-blue-100 text-blue-700' : 'text-slate-500 hover:bg-slate-100'}`} title="Eraser">
+                                <button onClick={() => setMode('erase')} className={`p-1.5 rounded ${mode === 'erase' ? 'bg-teal-100 text-teal-700' : 'text-slate-500 hover:bg-slate-100'}`} title="Eraser">
                                     <Eraser className="w-4 h-4" />
                                 </button>
                                 <div className="w-px bg-slate-200 mx-1"></div>
@@ -306,7 +306,7 @@ export default function ScreeningWorkspace() {
 
                     {!uploadedImage && (
                         <div className="p-3 border-t border-slate-200 bg-slate-50 text-center">
-                            <label className="text-sm text-blue-600 font-medium cursor-pointer hover:underline flex items-center justify-center">
+                            <label className="text-sm text-teal-600 font-medium cursor-pointer hover:underline flex items-center justify-center">
                                 <ImageIcon className="w-4 h-4 mr-2" />
                                 Or Upload Existing Drawing
                                 <input type="file" accept=".jpg,.jpeg,.png,.webp" onChange={handleImageUpload} className="hidden" />
@@ -333,7 +333,7 @@ export default function ScreeningWorkspace() {
                                 <Video className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                                 <h4 className="text-lg font-medium mb-2">Camera Access Required</h4>
                                 <p className="text-sm text-slate-400 mb-6">Camera recording will capture the child's drawing session and facial expressions for AI analysis.</p>
-                                <button onClick={enableCamera} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">Enable Camera</button>
+                                <button onClick={enableCamera} className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">Enable Camera</button>
                             </div>
                         )}
 

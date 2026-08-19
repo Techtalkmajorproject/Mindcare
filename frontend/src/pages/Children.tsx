@@ -19,7 +19,7 @@ export default function Children() {
                     <h2 className="text-xl font-bold text-slate-800">Children</h2>
                     <p className="text-sm text-slate-500">Manage screening profiles and previous screening sessions.</p>
                 </div>
-                <button onClick={() => navigate('/children/new')} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">+ Add Child</button>
+                <button onClick={() => navigate('/children/new')} className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">+ Add Child</button>
             </div>
 
             <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
@@ -29,7 +29,7 @@ export default function Children() {
                         <input
                             type="text"
                             placeholder="Search by name"
-                            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
                         />
                     </div>
                 </div>
@@ -52,8 +52,8 @@ export default function Children() {
                                         <td className="px-6 py-4">{child.age} yrs</td>
                                         <td className="px-6 py-4">{child.gender}</td>
                                         <td className="px-6 py-4 text-right space-x-3">
-                                            <button onClick={() => navigate(`/children/${child.id}`)} className="text-blue-600 font-medium hover:text-blue-800">View</button>
-                                            <button onClick={() => navigate(`/children/${child.id}/screening/new`)} className="text-blue-600 font-medium hover:text-blue-800">Start Screening</button>
+                                            <button onClick={() => navigate(`/children/${child.id}`)} className="text-teal-600 font-medium hover:text-teal-800">View</button>
+                                            <button onClick={() => navigate(`/children/${child.id}/screening/new`)} className="text-teal-600 font-medium hover:text-teal-800">Start Screening</button>
                                         </td>
                                     </tr>
                                 ))}
@@ -62,12 +62,12 @@ export default function Children() {
                     </div>
                 ) : (
                     <div className="p-16 text-center flex flex-col items-center justify-center">
-                        <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-4">
+                        <div className="w-16 h-16 bg-teal-50 text-teal-500 rounded-full flex items-center justify-center mb-4">
                             <UserCheck className="w-8 h-8" />
                         </div>
                         <h4 className="text-lg font-medium text-slate-800 mb-2">No children found</h4>
                         <p className="text-sm text-slate-500 mb-6">You haven't added any screening profiles yet.</p>
-                        <button onClick={() => navigate('/children/new')} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">+ Add Child</button>
+                        <button onClick={() => navigate('/children/new')} className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">+ Add Child</button>
                     </div>
                 )}
             </div>

@@ -29,12 +29,12 @@ export default function ChildProfile() {
                     <h2 className="text-xl font-bold text-slate-800">Child Profile: {child.name || child.id}</h2>
                     <p className="text-sm text-slate-500">Review details and screening history.</p>
                 </div>
-                <button onClick={() => navigate(`/children/${id}/screening/new`)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">Start New Screening</button>
+                <button onClick={() => navigate(`/children/${id}/screening/new`)} className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">Start New Screening</button>
             </div>
 
             <div className="bg-white rounded-xl border border-slate-200 p-6 flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-8">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                    <User className="w-8 h-8 text-blue-600" />
+                <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center">
+                    <User className="w-8 h-8 text-teal-600" />
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 flex-1">
                     <div>
@@ -72,7 +72,7 @@ export default function ChildProfile() {
                                     <p className="text-xs text-slate-500">Status: {screening.status}</p>
                                 </div>
                                 <div className="space-x-3">
-                                    <button onClick={() => navigate(`/screenings/${screening.id}/workspace`)} className="text-sm text-blue-600 hover:underline">Workspace</button>
+                                    <button onClick={() => navigate(`/screenings/${screening.id}/workspace`)} className="text-sm text-teal-600 hover:underline">Workspace</button>
                                 </div>
                             </div>
                         ))}
