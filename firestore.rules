@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 1. Reject by default unauthenticated users
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // 2. Authenticated users can access their own user profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // 3. A psychologist can access children they created
+    match /children/{childId} {
+      allow read, update, delete: if request.auth != null && resource.data.createdBy == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.createdBy == request.auth.uid;
+    }
+    
+    // 4. A psychologist can access screenings they conducted
+    match /screenings/{screeningId} {
+      allow read, update, delete: if request.auth != null && resource.data.conductedBy == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.conductedBy == request.auth.uid;
+    }
+
+    // 5. A psychologist can access reports they generated
+    match /reports/{reportId} {
+      allow read, update, delete: if request.auth != null && resource.data.generatedBy == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.generatedBy == request.auth.uid;
+    }
+  }
+}

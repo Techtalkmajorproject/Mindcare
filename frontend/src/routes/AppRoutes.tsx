@@ -27,7 +27,7 @@ export default function AppRoutes() {
                     <Route path="/screenings/:id/workspace" element={<ScreeningWorkspace />} />
                     <Route path="/screenings/:id/analyze" element={<AnalysisProgress />} />
                     <Route path="/screenings/:id/results" element={<Results />} />
-                    <Route path="/screenings/:id/report" element={<Report />} />
+                    <Route path="/reports/:id" element={<Report />} />
                     <Route path="/screenings" element={<div className="p-4 bg-white rounded-lg shadow-sm">All Screenings</div>} />
                     <Route path="/reports" element={<div className="p-4 bg-white rounded-lg shadow-sm">All Reports</div>} />
                 </Route>

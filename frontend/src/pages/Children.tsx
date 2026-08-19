@@ -1,14 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { Search, UserCheck } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { childService } from '../services/child.service';
+import { Child } from '../types';
 
 export default function Children() {
     const navigate = useNavigate();
-    
-    // Fake data for UI representation
-    const childrenList = [
-        { id: 'CH-849201', age: 6, sex: 'Female', sessions: 2, lastScreening: '2023-10-12', action: 'View' },
-        { id: 'CH-271944', age: 7, sex: 'Male', sessions: 1, lastScreening: '2023-11-05', action: 'View' },
-    ];
+    const [childrenList, setChildrenList] = useState<Child[]>([]);
+
+    useEffect(() => {
+        childService.getChildren().then(res => setChildrenList(res.data)).catch(console.error);
+    }, []);
 
     return (
         <div className="space-y-6">
@@ -24,9 +26,9 @@ export default function Children() {
                 <div className="p-4 border-b border-slate-200 flex justify-between items-center">
                     <div className="relative w-64">
                         <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input 
-                            type="text" 
-                            placeholder="Search by screening ID" 
+                        <input
+                            type="text"
+                            placeholder="Search by name"
                             className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
@@ -37,25 +39,21 @@ export default function Children() {
                         <table className="w-full text-left text-sm text-slate-600">
                             <thead className="bg-slate-50 border-b border-slate-200 text-xs uppercase font-semibold text-slate-500">
                                 <tr>
-                                    <th className="px-6 py-4">Screening ID</th>
+                                    <th className="px-6 py-4">Name</th>
                                     <th className="px-6 py-4">Age</th>
-                                    <th className="px-6 py-4">Sex</th>
-                                    <th className="px-6 py-4">Sessions</th>
-                                    <th className="px-6 py-4">Last Screening</th>
+                                    <th className="px-6 py-4">Gender</th>
                                     <th className="px-6 py-4 text-right">Action</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-200">
                                 {childrenList.map((child, i) => (
-                                    <tr key={i} className="hover:bg-slate-50 transition-colors">
-                                        <td className="px-6 py-4 font-medium text-slate-900">{child.id}</td>
+                                    <tr key={child.id || i} className="hover:bg-slate-50 transition-colors">
+                                        <td className="px-6 py-4 font-medium text-slate-900">{child.name || child.id}</td>
                                         <td className="px-6 py-4">{child.age} yrs</td>
-                                        <td className="px-6 py-4">{child.sex}</td>
-                                        <td className="px-6 py-4">{child.sessions}</td>
-                                        <td className="px-6 py-4">{child.lastScreening}</td>
+                                        <td className="px-6 py-4">{child.gender}</td>
                                         <td className="px-6 py-4 text-right space-x-3">
                                             <button onClick={() => navigate(`/children/${child.id}`)} className="text-blue-600 font-medium hover:text-blue-800">View</button>
-                                            <button onClick={() => navigate(`/screenings/new?childId=${child.id}`)} className="text-blue-600 font-medium hover:text-blue-800">Start Screening</button>
+                                            <button onClick={() => navigate(`/children/${child.id}/screening/new`)} className="text-blue-600 font-medium hover:text-blue-800">Start Screening</button>
                                         </td>
                                     </tr>
                                 ))}

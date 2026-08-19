@@ -1,5 +1,5 @@
 export interface User { id: string; email: string; name: string; role: string; }
-export interface Child { id: string; name: string; age: number; sex: 'Male' | 'Female' | 'Other'; issue: string; createdAt: string; }
+export interface Child { id: string; name?: string; age: number; gender?: string; parentName?: string; parentContact?: string; issue?: string; createdAt?: string | any; }
 export interface ScreeningSession { id: string; childId: string; date: string; status: 'Active' | 'Completed'; }
 export interface DrawingData { fileBlob: Blob; timestamp: number; }
 export interface DrawingAnalysis { dominantEmotion: string; distribution: Record<string, number>; confidence: number; quality: number; modelVersion: string; }

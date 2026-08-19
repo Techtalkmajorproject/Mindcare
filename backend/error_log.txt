@@ -1,0 +1,19 @@
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
+D:\major\project\multimodal-child-screening\backend\firebaseAdmin.js:6
+if (!admin.apps.length) {
+                ^
+
+TypeError: Cannot read properties of undefined (reading 'length')
+    at Object.<anonymous> (D:\major\project\multimodal-child-screening\backend\firebaseAdmin.js:6:17)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1481:32)
+    at Module._load (node:internal/modules/cjs/loader:1300:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.require (node:internal/modules/cjs/loader:1504:12)
+    at require (node:internal/modules/helpers:152:16)
+    at Object.<anonymous> (D:\major\project\multimodal-child-screening\backend\server.js:9:23)
+
+Node.js v24.11.1

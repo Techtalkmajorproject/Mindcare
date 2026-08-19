@@ -1,0 +1,18 @@
+KIDO DRAWING EMOTION MODEL
+FINAL TEST EVALUATION
+
+Test Accuracy: 67.03%
+Precision: 67.11%
+Recall: 67.03%
+F1 Score: 67.00%
+
+Classification Report:
+
+              precision    recall  f1-score   support
+
+   Happiness       0.66      0.70      0.68       816
+     Sadness       0.68      0.64      0.66       816
+
+    accuracy                           0.67      1632
+   macro avg       0.67      0.67      0.67      1632
+weighted avg       0.67      0.67      0.67      1632

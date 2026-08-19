@@ -1,11 +1,50 @@
 import { useParams } from 'react-router-dom';
 import { Save, Download, Check, AlertCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { reportService } from '../services/report.service';
+import { Report as ReportType } from '../types';
 
 export default function Report() {
     const { id } = useParams();
     const [notes, setNotes] = useState('');
-    const [status, setStatus] = useState<'Draft' | 'Pending Review' | 'Approved'>('Draft');
+    const [status, setStatus] = useState<string>('draft');
+    const [report, setReport] = useState<ReportType | null>(null);
+
+    useEffect(() => {
+        if (!id) return;
+        reportService.getReport(id).then(res => {
+            setReport(res.data);
+            setNotes(res.data.notes || '');
+            setStatus(res.data.status || 'draft');
+        }).catch(console.error);
+    }, [id]);
+
+    const handleSave = async () => {
+        if (!id) return;
+        try {
+            await reportService.updateReport(id, { notes, status });
+            alert("Draft saved!");
+        } catch (error) {
+            console.error(error);
+            alert("Failed to save draft.");
+        }
+    };
+
+    const handleApprove = async () => {
+        if (!id) return;
+        try {
+            await reportService.updateReport(id, { notes, status: 'approved' });
+            setStatus('approved');
+            alert("Report approved!");
+        } catch (error) {
+            console.error(error);
+            alert("Failed to approve report.");
+        }
+    };
+
+    if (!report) return <div className="p-10">Loading Report...</div>;
+
+    const childId = (report as any).childId || 'Unknown';
 
     return (
         <div className="space-y-6 pb-20 max-w-4xl mx-auto">
@@ -13,26 +52,28 @@ export default function Report() {
                 <div>
                     <h2 className="text-2xl font-bold text-slate-800">Screening Report</h2>
                     <div className="flex items-center mt-2 space-x-4 text-sm text-slate-500 font-medium">
-                        <span>ID: {id}</span>
+                        <span>Report ID: {id}</span>
                         <span>•</span>
                         <span>Date: {new Date().toLocaleDateString()}</span>
                         <span>•</span>
-                        <span className={`flex items-center px-2 py-0.5 rounded border text-xs font-bold ${status === 'Approved' ? 'bg-green-50 text-green-700 border-green-200' :
+                        <span className={`flex items-center px-2 py-0.5 rounded border text-xs font-bold ${status === 'approved' ? 'bg-green-50 text-green-700 border-green-200' :
                             'bg-amber-50 text-amber-700 border-amber-200'
                             }`}>
-                            {status}
+                            {status.toUpperCase()}
                         </span>
                     </div>
                 </div>
                 <div className="flex space-x-3">
-                    <button className="flex items-center px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 text-sm font-medium transition-colors bg-white">
+                    <button onClick={handleSave} className="flex items-center px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 text-sm font-medium transition-colors bg-white">
                         <Save className="w-4 h-4 mr-2" /> Save Draft
                     </button>
-                    <button className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors shadow-sm">
+                    <button onClick={() => {
+                        window.print();
+                    }} className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors shadow-sm">
                         <Download className="w-4 h-4 mr-2" /> Download PDF
                     </button>
-                    {status !== 'Approved' && (
-                        <button onClick={() => setStatus('Approved')} className="flex items-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors shadow-sm">
+                    {status !== 'approved' && (
+                        <button onClick={handleApprove} className="flex items-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors shadow-sm">
                             <Check className="w-4 h-4 mr-2" /> Approve Report
                         </button>
                     )}
@@ -50,7 +91,7 @@ export default function Report() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
                         <div>
                             <span className="block text-xs font-semibold text-slate-500 uppercase">Child ID</span>
-                            <span className="font-medium text-slate-900">{id}</span>
+                            <span className="font-medium text-slate-900">{childId}</span>
                         </div>
                         <div>
                             <span className="block text-xs font-semibold text-slate-500 uppercase">Age / Sex</span>

@@ -1,0 +1,3 @@
+﻿Γùç injected env (0) from .env // tip: Γùê encrypted .env [www.dotenvx.com]
+Γùç injected env (0) from .env // tip: Γîÿ suppress logs { quiet: true }
+Backend running at http://localhost:5000

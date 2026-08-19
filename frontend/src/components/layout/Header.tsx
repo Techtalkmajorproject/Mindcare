@@ -1,4 +1,4 @@
-import { Bell, Search } from 'lucide-react';
+import { Bell, Search, Menu } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
 const getPageInfo = (pathname: string) => {
@@ -12,23 +12,28 @@ const getPageInfo = (pathname: string) => {
     return { title: 'Application', desc: '' };
 };
 
-export default function Header() {
+export default function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
     const location = useLocation();
     const { title, desc } = getPageInfo(location.pathname);
 
     return (
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6">
-            <div>
-                <h1 className="text-lg font-semibold text-slate-900">{title}</h1>
-                <p className="text-sm text-slate-500 hidden sm:block">{desc}</p>
+        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 z-30">
+            <div className="flex items-center space-x-4">
+                <button onClick={toggleSidebar} className="p-2 -ml-2 text-slate-400 hover:text-slate-600 transition-colors bg-slate-100 hover:bg-slate-200 rounded-lg">
+                    <Menu className="w-5 h-5" />
+                </button>
+                <div>
+                    <h1 className="text-lg font-semibold text-slate-900">{title}</h1>
+                    <p className="text-sm text-slate-500 hidden sm:block">{desc}</p>
+                </div>
             </div>
-            
+
             <div className="flex items-center space-x-4">
                 <div className="relative">
                     <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input 
-                        type="text" 
-                        placeholder="Search..." 
+                    <input
+                        type="text"
+                        placeholder="Search..."
                         className="pl-9 pr-4 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>

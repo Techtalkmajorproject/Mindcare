@@ -1,12 +1,34 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { childService } from '../services/child.service';
 
 export default function CreateChild() {
     const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        name: '',
+        dateOfBirth: '',
+        age: '',
+        gender: '',
+        parentName: '',
+        parentContact: '',
+        primaryIssue: ''
+    });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Frontend only logic for now
-        navigate('/children/CH-NEW123');
+        try {
+            const res = await childService.createChild(formData);
+            if (res.data && res.data.success) {
+                navigate(`/children/${res.data.childId}`);
+            }
+        } catch (error) {
+            console.error('Failed to create child profile:', error);
+            alert('Failed to create child profile.');
+        }
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     return (
@@ -20,53 +42,46 @@ export default function CreateChild() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
-                        <input
-                            type="text"
-                            required
-                            className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                            placeholder="e.g. John Doe"
-                        />
+                        <input type="text" name="name" required value={formData.name} onChange={handleChange} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="e.g. John Doe" />
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Age (Years)</label>
-                        <input
-                            type="number"
-                            required
-                            min="3"
-                            max="18"
-                            className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                            placeholder="e.g. 6"
-                        />
-                        <p className="mt-1 text-xs text-slate-500">Must be between 3 and 18 years.</p>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-1">Date of Birth</label>
+                            <input type="date" name="dateOfBirth" required value={formData.dateOfBirth} onChange={handleChange} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-1">Age (Years)</label>
+                            <input type="number" name="age" required min="3" max="18" value={formData.age} onChange={handleChange} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="e.g. 6" />
+                        </div>
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">Gender</label>
                         <div className="flex space-x-4">
-                            <label className="flex items-center space-x-2">
-                                <input type="radio" name="sex" required value="Male" className="text-blue-600 focus:ring-blue-500" />
-                                <span className="text-sm text-slate-700">Male</span>
-                            </label>
-                            <label className="flex items-center space-x-2">
-                                <input type="radio" name="sex" required value="Female" className="text-blue-600 focus:ring-blue-500" />
-                                <span className="text-sm text-slate-700">Female</span>
-                            </label>
-                            <label className="flex items-center space-x-2">
-                                <input type="radio" name="sex" required value="Other" className="text-blue-600 focus:ring-blue-500" />
-                                <span className="text-sm text-slate-700">Other</span>
-                            </label>
+                            {['Male', 'Female', 'Other'].map((g) => (
+                                <label key={g} className="flex items-center space-x-2">
+                                    <input type="radio" name="gender" required value={g} checked={formData.gender === g} onChange={handleChange} className="text-blue-600 focus:ring-blue-500" />
+                                    <span className="text-sm text-slate-700">{g}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-1">Parent Name</label>
+                            <input type="text" name="parentName" required value={formData.parentName} onChange={handleChange} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="e.g. Jane Doe" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-1">Parent Contact</label>
+                            <input type="text" name="parentContact" required value={formData.parentContact} onChange={handleChange} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="e.g. 555-0123" />
                         </div>
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-1">Primary Issue / Presenting Problem</label>
-                        <textarea
-                            required
-                            rows={3}
-                            className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
-                            placeholder="Briefly describe the reason for screening (e.g., anxiety, behavioral changes)..."
-                        ></textarea>
+                        <textarea name="primaryIssue" required rows={3} value={formData.primaryIssue} onChange={handleChange} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none" placeholder="Briefly describe the reason for screening..."></textarea>
                     </div>
 
                     <div className="pt-4 border-t border-slate-200 flex justify-end space-x-3">
@@ -75,7 +90,6 @@ export default function CreateChild() {
                     </div>
                 </form>
             </div>
-
             <p className="text-xs text-center text-slate-400 pb-4 mt-6">AI-assisted screening support only. This system does not provide a clinical diagnosis.</p>
         </div>
     );

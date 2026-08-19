@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Edit2, Eraser, Undo, Redo, Trash2, Camera, Video, Square, Image as ImageIcon } from 'lucide-react';
+import { screeningService } from '../services/screening.service';
 
 export default function ScreeningWorkspace() {
     const { id } = useParams();
@@ -213,7 +214,25 @@ export default function ScreeningWorkspace() {
         }
     };
 
-    const handleFinish = () => {
+    const handleFinish = async () => {
+        try {
+            if (uploadedImage) {
+                const res = await fetch(uploadedImage);
+                const blob = await res.blob();
+                const formData = new FormData();
+                formData.append('file', blob, 'image.png');
+                await screeningService.uploadFacialObservation(id!, formData);
+            } else if (canvasRef.current) {
+                const dataUrl = canvasRef.current.toDataURL('image/png');
+                const res = await fetch(dataUrl);
+                const blob = await res.blob();
+                const formData = new FormData();
+                formData.append('file', blob, 'drawing.png');
+                await screeningService.uploadDrawing(id!, formData);
+            }
+        } catch (error) {
+            console.error("Upload failed", error);
+        }
         navigate(`/screenings/${id}/analyze`);
     };
 
