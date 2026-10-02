@@ -5,7 +5,7 @@ const { exec } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 require("dotenv").config();
-
+const mlRoutes = require("./routes/mlRoutes");
 const { db, admin } = require("./firebaseAdmin");
 const verifyToken = require("./middlewares/authMiddleware");
 
@@ -14,7 +14,10 @@ const upload = multer({ dest: 'uploads/' });
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
-
+app.use(
+    "/api/ml",
+    mlRoutes
+);
 app.get("/api/health", (req, res) => {
   res.json({
     status: "success",
@@ -301,12 +304,14 @@ app.get("/api/screenings/:id/results", verifyToken, async (req, res) => {
     const doc = await db.collection("screenings").doc(req.params.id).get();
     if (!doc.exists) return res.status(404).json({ error: "Screening not found" });
     const screening = doc.data();
-    const baseResponse = { childId: screening.childId, screeningId: req.params.id };
-    if (screening.analysisResult) {
-      res.json({ ...baseResponse, ...screening.analysisResult });
-    } else {
-      res.json({ ...baseResponse, riskLevel: 'low', logic: 'No actual visual inputs processed.' });
+    if (screening.conductedBy !== req.user.uid) {
+      return res.status(403).json({ error: "Unauthorized access to screening" });
     }
+    res.json({
+      childId: screening.childId,
+      screeningId: req.params.id,
+      analysis: screening.analysis || {}
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

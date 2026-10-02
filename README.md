@@ -67,6 +67,16 @@ npm run dev
 
 ### 3. Machine Learning Setup
 
+The Express backend forwards drawing and face images to the FastAPI model service at `http://127.0.0.1:8001` (configurable with `ML_SERVICE_URL`). Start this service in a separate terminal before using analysis:
+
+```bash
+python -m venv backend/.venv
+backend/.venv/Scripts/python.exe -m pip install -r backend/ml_service/requirements.txt
+backend/.venv/Scripts/python.exe -m uvicorn backend.ml_service.app:app --host 127.0.0.1 --port 8001
+```
+
+The service loads the trained models and class labels from `models/drawing/artifacts/` and `models/facial/artifacts/`. Check `http://127.0.0.1:8001/health`; both model flags should be `true`.
+
 To re-train or evaluate the provided Drawing Emotion model, make sure you have the KIDO Dataset loaded in `datasets/drawing/Dataset/`.
 
 ```bash

@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Edit2, Eraser, Undo, Redo, Trash2, Camera, Video, Square, Image as ImageIcon } from 'lucide-react';
-import { screeningService } from '../services/screening.service';
+import { analyzeDrawing, analyzeFace, type DrawingPrediction, type FacialPrediction } from '../services/mlService';
 
 export default function ScreeningWorkspace() {
     const { id } = useParams();
@@ -18,6 +18,7 @@ export default function ScreeningWorkspace() {
 
     // Camera state
     const videoRef = useRef<HTMLVideoElement>(null);
+    const faceCanvasRef = useRef<HTMLCanvasElement>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const streamRef = useRef<MediaStream | null>(null);
     const [cameraState, setCameraState] = useState<'initial' | 'ready' | 'recording' | 'completed' | 'error'>('initial');
@@ -25,6 +26,11 @@ export default function ScreeningWorkspace() {
     const [sessionTime, setSessionTime] = useState(0);
     const [, setRecordedBlob] = useState<Blob | null>(null);
     const [recordingUrl, setRecordingUrl] = useState<string | null>(null);
+    const [drawingResult, setDrawingResult] = useState<DrawingPrediction | null>(null);
+    const [facialResult, setFacialResult] = useState<FacialPrediction | null>(null);
+    const processingFaceRef = useRef(false);
+    const [analysisError, setAnalysisError] = useState<string | null>(null);
+    const [isFinishing, setIsFinishing] = useState(false);
 
     // Timer effect
     useEffect(() => {
@@ -40,6 +46,12 @@ export default function ScreeningWorkspace() {
         }
         return () => clearInterval(interval);
     }, [cameraState]);
+
+    useEffect(() => {
+        return () => {
+            streamRef.current?.getTracks().forEach(track => track.stop());
+        };
+    }, []);
 
     // Attach stream to video on render
     useEffect(() => {
@@ -169,7 +181,7 @@ export default function ScreeningWorkspace() {
     // Camera functions
     const enableCamera = async () => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
             streamRef.current = stream;
             setCameraState('ready');
         } catch (err) {
@@ -214,26 +226,75 @@ export default function ScreeningWorkspace() {
         }
     };
 
-    const handleFinish = async () => {
+    const canvasToBlob = (canvas: HTMLCanvasElement, type: string): Promise<Blob> =>
+        new Promise((resolve, reject) => {
+            canvas.toBlob(blob => {
+                if (blob) resolve(blob);
+                else reject(new Error('Could not create image data.'));
+            }, type, 0.85);
+        });
+
+    const captureFaceFrame = async () => {
+        if (!id || processingFaceRef.current || !videoRef.current || !faceCanvasRef.current) return;
+
+        const video = videoRef.current;
+        if (!video.videoWidth || !video.videoHeight) return;
+
+        processingFaceRef.current = true;
         try {
+            const canvas = faceCanvasRef.current;
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext('2d');
+            if (!context) return;
+
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const result = await analyzeFace(await canvasToBlob(canvas, 'image/jpeg'), id);
+            setFacialResult(result);
+        } catch (error) {
+            // A frame may not contain a detectable face; keep recording and try the next sample.
+            console.warn('Facial analysis failed:', error);
+        } finally {
+            processingFaceRef.current = false;
+        }
+    };
+
+    useEffect(() => {
+        if (cameraState !== 'recording' || !id) return;
+        const intervalId = window.setInterval(captureFaceFrame, 3000);
+        return () => window.clearInterval(intervalId);
+    }, [cameraState, id]);
+
+    const handleFinish = async () => {
+        if (!id) return;
+        setIsFinishing(true);
+        setAnalysisError(null);
+        try {
+            let drawingBlob: Blob;
             if (uploadedImage) {
                 const res = await fetch(uploadedImage);
-                const blob = await res.blob();
-                const formData = new FormData();
-                formData.append('file', blob, 'image.png');
-                await screeningService.uploadFacialObservation(id!, formData);
+                drawingBlob = await res.blob();
             } else if (canvasRef.current) {
-                const dataUrl = canvasRef.current.toDataURL('image/png');
-                const res = await fetch(dataUrl);
-                const blob = await res.blob();
-                const formData = new FormData();
-                formData.append('file', blob, 'drawing.png');
-                await screeningService.uploadDrawing(id!, formData);
+                drawingBlob = await canvasToBlob(canvasRef.current, 'image/png');
+            } else {
+                throw new Error('A drawing is required before analysis.');
             }
+            const result = await analyzeDrawing(drawingBlob, id);
+            setDrawingResult(result);
+            if (cameraState === 'recording') stopRecording();
+            navigate(`/screenings/${id}/analyze`);
         } catch (error) {
-            console.error("Upload failed", error);
+            console.error('Drawing analysis failed:', error);
+            const responseError = error as { response?: { data?: { error?: string; detail?: string } }; message?: string };
+            const detail = responseError.response?.data?.error
+                ?? responseError.response?.data?.detail
+                ?? responseError.message;
+            setAnalysisError(detail
+                ? `Drawing analysis failed: ${detail}`
+                : 'Drawing analysis could not be completed. Check that the backend and model service are running, then try again.');
+        } finally {
+            setIsFinishing(false);
         }
-        navigate(`/screenings/${id}/analyze`);
     };
 
     return (
@@ -253,8 +314,10 @@ export default function ScreeningWorkspace() {
                         </div>
                     </div>
                 </div>
-                <button onClick={handleFinish} className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg font-medium shadow-sm transition-colors">Finish & Analyze</button>
+                <button onClick={handleFinish} disabled={isFinishing} className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg font-medium shadow-sm transition-colors disabled:opacity-50">{isFinishing ? 'Analyzing…' : 'Finish & Analyze'}</button>
             </div>
+
+            {analysisError && <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{analysisError}</p>}
 
             {/* Main Workspace */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -280,6 +343,7 @@ export default function ScreeningWorkspace() {
                             </div>
                         )}
                     </div>
+                    <canvas ref={faceCanvasRef} className="hidden" aria-hidden="true" />
 
                     <div className="p-4 flex-1 flex flex-col justify-center items-center bg-slate-100 relative min-h-[400px]">
                         {uploadedImage ? (
@@ -382,8 +446,23 @@ export default function ScreeningWorkspace() {
                     )}
                 </div>
             </div>
+
+            {(drawingResult || facialResult) && (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    {drawingResult && <AnalysisCard title="Drawing emotion analysis" result={drawingResult} />}
+                    {facialResult && <AnalysisCard title="Facial emotion analysis" result={facialResult} />}
+                </div>
+            )}
         </div>
     );
+}
+
+function AnalysisCard({ title, result }: { title: string; result: DrawingPrediction | FacialPrediction }) {
+    return <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h3 className="font-semibold text-slate-800">{title}</h3>
+        <p className="mt-3 text-sm">Detected emotion: <strong>{result.prediction}</strong></p>
+        <p className="text-sm">Confidence: {(result.confidence * 100).toFixed(1)}%</p>
+    </div>;
 }
 
 // Dummy standard icon since lucide might not export CheckCircle implicitly in all setups, though it usually does. I will add a tiny helper component.

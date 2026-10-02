@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { auth } from '../firebase/config';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+import axios from 'axios';
 import { apiClient } from '../services/api';
 
 // To prevent rewriting exactly what user was using before, we map FirebaseUser to existing concept loosely or supply it.
@@ -26,9 +27,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     // We pull from the backend to get roles/name
                     const res = await apiClient.get('/auth/me');
                     setUser(res.data);
-                } catch (e) {
-                    // user doc might not exist yet if they just registered, handle gracefully.
-                    setUser(firebaseUser);
+                } catch (error) {
+                    // A signed-in Firebase account can legitimately be missing its
+                    // profile document during registration, but a rejected token is
+                    // not an authenticated app session.
+                    if (axios.isAxiosError(error) && error.response?.status === 404) {
+                        setUser(firebaseUser);
+                    } else {
+                        console.error('Backend authentication failed:', error);
+                        await signOut(auth);
+                        setUser(null);
+                    }
                 }
             } else {
                 setUser(null);
